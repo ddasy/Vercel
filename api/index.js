@@ -12,7 +12,17 @@ app.use(cors({
   allowedHeaders: ['Content-Type']
 }));
 
-app.use(express.json());
+// 解析 JSON 请求体
+app.use(express.json({
+  verify: (req, res, buf) => {
+    try {
+      JSON.parse(buf);
+    } catch (e) {
+      res.status(400).json({ error: '无效的 JSON 格式' });
+      throw new Error('无效的 JSON 格式');
+    }
+  }
+}));
 
 // 本地接收地址
 const WEBHOOK_URL = 'https://8534-122-231-237-246.ngrok-free.app/webhook';
@@ -20,7 +30,12 @@ const WEBHOOK_URL = 'https://8534-122-231-237-246.ngrok-free.app/webhook';
 // 错误处理中间件
 app.use((err, req, res, next) => {
   console.error('错误:', err);
-  res.status(500).json({ error: err.message });
+  if (!res.headersSent) {
+    res.status(500).json({ 
+      error: err.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 // 简单的请求日志
@@ -34,7 +49,7 @@ app.use((req, res, next) => {
   console.log(`方法: ${req.method}`);
   console.log('请求头:', req.headers);
   if (req.method !== 'GET') {
-    console.log('请求体:', req.body);
+    console.log('请求体:', JSON.stringify(req.body, null, 2));
   }
   next();
 });
@@ -57,14 +72,18 @@ app.get('/favicon.ico', (req, res) => {
   res.status(204).end();
 });
 
-// 根路径 POST 处理
-app.post('/', async (req, res) => {
-  console.log(`\n[${new Date().toISOString()}] 收到根路径请求，转发到: ${WEBHOOK_URL}`);
+// 通用的 webhook 处理函数
+async function handleWebhook(req, res) {
+  const startTime = new Date();
+  console.log(`\n[${startTime.toISOString()}] 开始处理 webhook 请求`);
   
   try {
-    if (!req.body) {
-      throw new Error('请求体为空');
+    if (!req.body || Object.keys(req.body).length === 0) {
+      throw new Error('请求体为空或无效');
     }
+
+    console.log('转发请求到:', WEBHOOK_URL);
+    console.log('请求体:', JSON.stringify(req.body, null, 2));
 
     // 转发请求
     const response = await axios({
@@ -72,12 +91,17 @@ app.post('/', async (req, res) => {
       url: WEBHOOK_URL,
       data: req.body,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'User-Agent': 'Vercel-Webhook-Forwarder'
       },
-      timeout: 5000 // 5秒超时
+      timeout: 10000 // 10秒超时
     });
     
-    console.log('转发成功，响应:', response.data);
+    const endTime = new Date();
+    console.log('转发成功，耗时:', endTime - startTime, 'ms');
+    console.log('响应状态:', response.status);
+    console.log('响应数据:', JSON.stringify(response.data, null, 2));
+    
     res.json(response.data);
   } catch (error) {
     console.error('转发失败:', error.message);
@@ -85,57 +109,32 @@ app.post('/', async (req, res) => {
       console.error('响应状态:', error.response.status);
       console.error('响应数据:', error.response.data);
     }
-    res.status(500).json({ 
-      error: error.message,
-      timestamp: new Date().toISOString()
-    });
+    if (!res.headersSent) {
+      res.status(500).json({ 
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
   }
-});
+}
+
+// 根路径 POST 处理
+app.post('/', handleWebhook);
 
 // webhook 路径处理
-app.post('/webhook', async (req, res) => {
-  console.log(`\n[${new Date().toISOString()}] 开始转发请求到: ${WEBHOOK_URL}`);
-  
-  try {
-    if (!req.body) {
-      throw new Error('请求体为空');
-    }
-
-    // 转发请求
-    const response = await axios({
-      method: 'POST',
-      url: WEBHOOK_URL,
-      data: req.body,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      timeout: 5000 // 5秒超时
-    });
-    
-    console.log('转发成功，响应:', response.data);
-    res.json(response.data);
-  } catch (error) {
-    console.error('转发失败:', error.message);
-    if (error.response) {
-      console.error('响应状态:', error.response.status);
-      console.error('响应数据:', error.response.data);
-    }
-    res.status(500).json({ 
-      error: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
+app.post('/webhook', handleWebhook);
 
 // 健康检查
 app.get('/health', (req, res) => {
-  console.log('健康检查请求');
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    webhook_url: WEBHOOK_URL
+  });
 });
 
 // 处理 404
 app.use((req, res) => {
-  // 忽略 favicon 请求的 404 日志
   if (req.path !== '/favicon.ico') {
     console.log('404 - 未找到路由:', req.path);
   }
