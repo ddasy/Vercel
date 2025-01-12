@@ -78,7 +78,8 @@ async function readLogFile(filePath) {
         if (exists) {
             const content = await fs.readFile(filePath, 'utf8');
             console.log(`Successfully read from ${filePath}`);
-            return content ? content.split('\n').filter(line => line.trim()) : [];
+            // 将内容按双换行符分割，并过滤掉空行
+            return content ? content.split('\n\n').filter(line => line.trim()) : [];
         }
         console.log(`File ${filePath} does not exist, returning empty array`);
         return [];
@@ -88,15 +89,60 @@ async function readLogFile(filePath) {
     }
 }
 
+// 清理日志文件
+async function cleanLogFiles() {
+    try {
+        console.log('开始清理日志文件...');
+        await fs.rm(LOGS_DIR, { recursive: true, force: true });
+        console.log('日志目录已清理');
+        await ensureLogDirectory();
+    } catch (error) {
+        console.error('清理日志文件时出错:', error);
+        throw error;
+    }
+}
+
 // 写入日志文件
 async function writeLogFile(filePath, logs) {
     try {
         const dir = path.dirname(filePath);
         await fs.mkdir(dir, { recursive: true });
-        await fs.writeFile(filePath, logs.join('\n') + '\n');
-        console.log(`Successfully wrote to ${filePath}`);
+        
+        // 格式化每条日志，确保是对象格式
+        const formattedLogs = logs.map(log => {
+            let logObj = log;
+            if (typeof log === 'string') {
+                try {
+                    // 移除多余的引号和转义字符
+                    const cleanedLog = log
+                        .replace(/^"/, '')
+                        .replace(/"$/, '')
+                        .replace(/\\"/g, '"')
+                        .replace(/\\\\/g, '\\');
+                    logObj = JSON.parse(cleanedLog);
+                } catch (e) {
+                    try {
+                        // 尝试直接解析
+                        logObj = JSON.parse(log);
+                    } catch (e2) {
+                        console.log('解析日志时出错，使用原始内容:', e2.message);
+                        return null; // 返回 null 以便后续过滤
+                    }
+                }
+            }
+            return logObj;
+        });
+
+        // 过滤掉无效的日志，并格式化为字符串
+        const validLogs = formattedLogs
+            .filter(log => log !== null && typeof log === 'object')
+            .map(log => JSON.stringify(log, null, 2));
+
+        // 写入文件，每条日志之间用双换行符分隔
+        await fs.writeFile(filePath, validLogs.join('\n\n'));
+        console.log(`Successfully wrote ${validLogs.length} logs to ${filePath}`);
     } catch (error) {
-        console.error(`Error writing to log file ${filePath}: ${error}`);
+        console.error(`Error writing to log file ${filePath}:`, error);
         throw error;
     }
 }
@@ -104,10 +150,17 @@ async function writeLogFile(filePath, logs) {
 // 添加新日志
 async function addLog(filePath, log, maxLogs) {
     try {
-        console.log(`Adding log to ${filePath}`);
+        console.log(`Adding log to ${filePath} (max logs: ${maxLogs})`);
         const logs = await readLogFile(filePath);
+        
+        // 添加新日志到开头
         logs.unshift(log);
-        await writeLogFile(filePath, logs.slice(0, maxLogs));
+        
+        // 保留指定数量的日志
+        const trimmedLogs = logs.slice(0, maxLogs);
+        console.log(`Keeping ${trimmedLogs.length} of ${logs.length} logs`);
+        
+        await writeLogFile(filePath, trimmedLogs);
         console.log(`Successfully added log to ${filePath}`);
     } catch (error) {
         console.error(`Error adding log to ${filePath}: ${error}`);
@@ -118,7 +171,7 @@ async function addLog(filePath, log, maxLogs) {
 // 初始化应用
 async function initializeApp() {
     try {
-        await ensureLogDirectory();
+        await cleanLogFiles(); // 添加清理日志的步骤
         console.log('Application initialized successfully');
     } catch (error) {
         console.error('Failed to initialize application:', error);
@@ -142,11 +195,10 @@ async function handleWebhook(req, res) {
             }
         }
 
-        // 转换时间为北京时间
-        const beijingTime = moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
+        // 保留完整的原始消息，只添加额外的时间信息
         const message = { 
-            ...messageData, 
-            timestamp: beijingTime,
+            ...messageData,
+            beijing_time: moment(messageData.timestamp || new Date()).tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss'),
             received_at: new Date().toISOString()
         };
         
@@ -154,14 +206,14 @@ async function handleWebhook(req, res) {
         
         // 记录到主日志
         console.log('添加到主日志...');
-        await addLog(MAIN_LOG_FILE, JSON.stringify(message), MAX_MAIN_LOGS);
+        await addLog(MAIN_LOG_FILE, message, MAX_MAIN_LOGS);
 
-        // 处理 investment 相关的消息
-        if (message.investment) {
-            console.log(`处理投资消息: ${message.investment}`);
-            const symbol = message.investment.split('.')[0]; // 提取币种符号
+        // 处理 instrument 相关的消息
+        if (message.instrument) {
+            console.log(`处理交易对消息: ${message.instrument}`);
+            const symbol = message.instrument.split('.')[0]; // 提取币种符号
             const symbolLogFile = path.join(LOGS_DIR, `${symbol}.log`);
-            await addLog(symbolLogFile, JSON.stringify(message), MAX_INVESTMENT_LOGS);
+            await addLog(symbolLogFile, message, MAX_INVESTMENT_LOGS);
         }
 
         res.status(200).json({ 
