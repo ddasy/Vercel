@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 
@@ -24,6 +25,10 @@ app.use((err, req, res, next) => {
 
 // 简单的请求日志
 app.use((req, res, next) => {
+  // 忽略 favicon 请求的日志
+  if (req.path === '/favicon.ico') {
+    return next();
+  }
   console.log(`\n[${new Date().toISOString()}] 收到请求:`);
   console.log(`路径: ${req.path}`);
   console.log(`方法: ${req.method}`);
@@ -34,7 +39,25 @@ app.use((req, res, next) => {
   next();
 });
 
-// 根路径处理
+// 根路径 GET 处理
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'Webhook 转发服务器正在运行',
+    endpoints: {
+      webhook: '/webhook (POST)',
+      health: '/health (GET)'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+// favicon 处理
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end();
+});
+
+// 根路径 POST 处理
 app.post('/', async (req, res) => {
   console.log(`\n[${new Date().toISOString()}] 收到根路径请求，转发到: ${WEBHOOK_URL}`);
   
@@ -112,7 +135,10 @@ app.get('/health', (req, res) => {
 
 // 处理 404
 app.use((req, res) => {
-  console.log('404 - 未找到路由:', req.path);
+  // 忽略 favicon 请求的 404 日志
+  if (req.path !== '/favicon.ico') {
+    console.log('404 - 未找到路由:', req.path);
+  }
   res.status(404).json({ 
     error: '未找到路由',
     path: req.path,
