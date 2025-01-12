@@ -98,35 +98,24 @@ async function handleWebhook(req, res) {
     console.log('请求体:', typeof req.body === 'object' ? JSON.stringify(req.body, null, 2) : req.body);
     console.log('请求头:', JSON.stringify(req.headers, null, 2));
 
-    // 准备转发的数据
-    const postData = typeof req.body === 'object' ? req.body : { raw: req.body };
-
     // 转发请求
     const response = await axios({
       method: 'POST',
       url: WEBHOOK_URL,
-      data: postData,
+      data: req.body, // 直接转发原始请求体
       headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'Vercel-Webhook-Forwarder',
-        'X-Original-Host': req.headers.host,
-        'X-Original-Path': req.path,
-        'X-Original-Method': req.method
+        'Content-Type': 'application/json'
       },
-      timeout: 10000 // 10秒超时
+      validateStatus: false // 不抛出任何状态码的错误
     });
     
     const endTime = new Date();
-    console.log('转发成功，耗时:', endTime - startTime, 'ms');
+    console.log('转发完成，耗时:', endTime - startTime, 'ms');
     console.log('响应状态:', response.status);
     console.log('响应数据:', JSON.stringify(response.data, null, 2));
     
-    res.json({
-      success: true,
-      message: '请求已转发',
-      original_response: response.data,
-      timestamp: new Date().toISOString()
-    });
+    // 返回与 ngrok 相同的状态码
+    res.status(response.status).json(response.data);
   } catch (error) {
     console.error('转发失败:', error.message);
     console.error('错误堆栈:', error.stack);
