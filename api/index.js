@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 // 本地接收地址
-const WEBHOOK_URL = 'https://4039-122-231-237-246.ngrok-free.app/webhook';
+const WEBHOOK_URL = 'https://48a3-122-231-237-246.ngrok-free.app/webhook';
 
 // 记录所有请求
 app.use((req, res, next) => {
