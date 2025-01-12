@@ -2,8 +2,19 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
+
+// 从配置文件或环境变量获取 webhook URL
+let WEBHOOK_URL;
+try {
+  const config = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'config.json'), 'utf8'));
+  WEBHOOK_URL = config.webhook_url;
+} catch (error) {
+  console.log('未找到配置文件或配置文件无效，使用环境变量或默认值');
+  WEBHOOK_URL = process.env.WEBHOOK_URL || 'https://c339-122-231-237-246.ngrok-free.app/webhook';
+}
 
 // 启用所有 CORS 请求
 app.use(cors({
@@ -36,9 +47,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
-// 本地接收地址
-const WEBHOOK_URL = 'https://c339-122-231-237-246.ngrok-free.app/webhook';
 
 // 错误处理中间件
 app.use((err, req, res, next) => {
