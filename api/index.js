@@ -6,12 +6,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 默认webhook接收地址（使用你的ngrok地址）
-const DEFAULT_WEBHOOK = 'https://8c2f-103-61-153-92.ngrok-free.app/webhook';
+// 默认webhook接收地址
+const DEFAULT_WEBHOOK = 'https://4039-122-231-237-246.ngrok-free.app/webhook';
 
 app.post('/webhook', async (req, res) => {
   try {
-    // 使用请求头中的地址，如果没有则使用默认地址
     const targetUrl = req.headers['x-target-url'] || DEFAULT_WEBHOOK;
     
     const response = await axios({
@@ -20,7 +19,7 @@ app.post('/webhook', async (req, res) => {
       data: req.body,
       headers: {
         'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true'  // 跳过ngrok警告
+        'ngrok-skip-browser-warning': 'true'
       },
       timeout: 5000
     });
