@@ -1,0 +1,7 @@
+version: "2"
+authtoken: 2rVfJNozD2Nl1HJtNgYWQrAJxLf_7KEU5Uxky3QZH9374dKV8
+tunnels:
+  webhook:
+    proto: http
+    addr: 3001
+    domain: glad-friendly-ostrich.ngrok-free.app 

@@ -1,0 +1,22 @@
+# 项目功能
+通过vercel 将接收到的信息转发到ngrok穿透到本地
+
+# 项目需求  
+1. 修改vercel接收到消息的时区改为北京时间。
+2. 将收到的信息保存到log，只保留最新的20条
+3. 通过识别investment的币种将本条信息存储到对应的log文件。如果没有对应名字的log文件，则创建一个。
+如收到的是investment：BTCUSDT.P
+创建为BTCUSDT.log
+4. investment创建的对应币种log只保留最新的2条
+
+# 项目实现
+用ngrok穿透到本地
+
+# 项目地址 
+静态域ngrok http --url=glad-friendly-ostrich.ngrok-free.app 80
+ 
+ngrok.yml
+agent:
+authtoken: 2rVfJNozD2Nl1HJtNgYWQrAJxLf_7KEU5Uxky3QZH9374dKV8
+
+https://github.com/ddasy/Vercel.git
