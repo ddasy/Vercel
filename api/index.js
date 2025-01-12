@@ -6,29 +6,53 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 添加一个简单的健康检查端点
+// 主页路由
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: '欢迎使用API代理服务器',
+    usage: {
+      health_check: 'GET /health - 检查服务器状态',
+      proxy: '在请求头中添加 x-target-url 来指定目标服务器',
+      example: {
+        url: 'https://vercel-kappa-hazel.vercel.app/your-path',
+        headers: {
+          'x-target-url': 'https://your-target-server.com'
+        }
+      }
+    }
+  });
+});
+
+// 健康检查端点
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
 });
 
+// 代理路由
 app.all('/*', async (req, res) => {
+  // 跳过主页和健康检查路由
+  if (req.path === '/' || req.path === '/health') {
+    return;
+  }
+
   try {
     // 验证请求头中是否包含目标URL
     const targetUrl = req.headers['x-target-url'];
     if (!targetUrl) {
       return res.status(400).json({
         error: 'Missing target URL',
-        message: 'Please provide x-target-url header'
+        message: 'Please provide x-target-url header',
+        usage: {
+          headers: {
+            'x-target-url': 'https://your-target-server.com'
+          }
+        }
       });
-    }
-
-    const path = req.path;
-    if (path === '/health') {
-      return; // 跳过健康检查端点的代理
     }
     
     // 构建完整的目标URL
-    const fullUrl = `${targetUrl}${path}`;
+    const fullUrl = `${targetUrl}${req.path}`;
     
     // 设置超时时间为5秒
     const response = await axios({
@@ -39,15 +63,13 @@ app.all('/*', async (req, res) => {
         ...req.headers,
         host: new URL(targetUrl).host,
       },
-      timeout: 5000 // 5秒超时
+      timeout: 5000
     });
     
-    // 返回响应
     res.status(response.status).json(response.data);
   } catch (error) {
     console.error('Proxy error:', error.message);
     
-    // 更详细的错误处理
     if (error.code === 'ECONNREFUSED') {
       res.status(502).json({
         error: 'Connection refused',
@@ -70,7 +92,6 @@ app.all('/*', async (req, res) => {
   }
 });
 
-// 如果在本地运行，监听3001端口
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
