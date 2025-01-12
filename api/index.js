@@ -11,18 +11,27 @@ const WEBHOOK_URL = 'https://4039-122-231-237-246.ngrok-free.app/webhook';
 
 // 记录所有请求
 app.use((req, res, next) => {
-  console.log(`\n[${new Date().toISOString()}] 收到请求:`);
+  const requestId = Math.random().toString(36).substring(7);
+  console.log(`\n[${new Date().toISOString()}] [${requestId}] 收到新请求 =========`);
   console.log(`路径: ${req.path}`);
   console.log(`方法: ${req.method}`);
+  console.log('IP:', req.ip);
   console.log('请求头:', JSON.stringify(req.headers, null, 2));
   console.log('请求体:', JSON.stringify(req.body, null, 2));
+  console.log('===============================================');
+  
+  // 将requestId附加到请求对象，用于跟踪
+  req.requestId = requestId;
   next();
 });
 
 app.post('/webhook', async (req, res) => {
-  console.log(`\n[${new Date().toISOString()}] 开始转发请求到: ${WEBHOOK_URL}`);
+  const { requestId } = req;
+  console.log(`\n[${new Date().toISOString()}] [${requestId}] 开始转发请求`);
+  console.log(`目标地址: ${WEBHOOK_URL}`);
   
   try {
+    console.log(`[${requestId}] 准备发送请求...`);
     const response = await axios({
       method: 'POST',
       url: WEBHOOK_URL,
@@ -30,23 +39,50 @@ app.post('/webhook', async (req, res) => {
       headers: {
         'Content-Type': 'application/json',
         'User-Agent': 'Vercel-Webhook-Forwarder',
+        'X-Request-ID': requestId,
         'X-Forwarded-For': req.headers['x-forwarded-for'] || req.ip
-      }
+      },
+      timeout: 10000, // 增加超时时间到10秒
+      validateStatus: false // 不抛出HTTP错误
     });
     
-    console.log(`[${new Date().toISOString()}] 转发成功，响应状态: ${response.status}`);
-    console.log('响应数据:', JSON.stringify(response.data, null, 2));
+    console.log(`[${requestId}] 收到响应:`);
+    console.log(`状态码: ${response.status}`);
+    console.log('响应头:', JSON.stringify(response.headers, null, 2));
+    console.log('响应体:', JSON.stringify(response.data, null, 2));
     
-    res.status(response.status).json(response.data);
+    res.status(response.status).json({
+      success: true,
+      message: '请求已转发',
+      response: response.data,
+      requestId,
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
-    console.error(`[${new Date().toISOString()}] 转发失败:`, error.message);
+    console.error(`[${requestId}] 转发失败:`, error.message);
+    console.error(`[${requestId}] 错误详情:`, error.stack);
+    
     if (error.response) {
-      console.error('错误响应:', JSON.stringify(error.response.data, null, 2));
+      console.error(`[${requestId}] 错误响应:`, {
+        status: error.response.status,
+        headers: error.response.headers,
+        data: error.response.data
+      });
+    }
+    
+    if (error.request) {
+      console.error(`[${requestId}] 请求配置:`, {
+        method: error.request.method,
+        path: error.request.path,
+        headers: error.request.headers
+      });
     }
     
     res.status(500).json({ 
+      success: false,
       error: '转发失败',
       message: error.message,
+      requestId,
       timestamp: new Date().toISOString()
     });
   }
@@ -57,7 +93,8 @@ app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok',
     timestamp: new Date().toISOString(),
-    webhook_url: WEBHOOK_URL
+    webhook_url: WEBHOOK_URL,
+    version: '1.1.0'
   });
 });
 
