@@ -8,18 +8,8 @@
   ],
   "routes": [
     {
-      "src": "/webhook",
-      "dest": "/api/index.js",
-      "methods": ["POST", "OPTIONS"]
-    },
-    {
-      "src": "/health",
-      "dest": "/api/index.js",
-      "methods": ["GET"]
+      "src": "/(.*)",
+      "dest": "/api/index.js"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "regions": ["hnd1"]
+  ]
 } 
