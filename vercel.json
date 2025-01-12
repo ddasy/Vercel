@@ -9,11 +9,17 @@
   "routes": [
     {
       "src": "/webhook",
-      "dest": "/api/index.js"
+      "dest": "/api/index.js",
+      "methods": ["POST", "OPTIONS"]
     },
     {
       "src": "/health",
-      "dest": "/api/index.js"
+      "dest": "/api/index.js",
+      "methods": ["GET"]
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "regions": ["hnd1"]
 } 
