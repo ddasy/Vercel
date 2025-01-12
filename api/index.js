@@ -6,19 +6,31 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 默认的本地服务器地址，你可以在请求中通过 targetUrl 参数覆盖它
-const DEFAULT_TARGET = 'http://localhost:3000';
+// 添加一个简单的健康检查端点
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Server is running' });
+});
 
 app.all('/*', async (req, res) => {
   try {
-    // 从请求头中获取目标URL，如果没有则使用默认值
-    const targetUrl = req.headers['x-target-url'] || DEFAULT_TARGET;
+    // 验证请求头中是否包含目标URL
+    const targetUrl = req.headers['x-target-url'];
+    if (!targetUrl) {
+      return res.status(400).json({
+        error: 'Missing target URL',
+        message: 'Please provide x-target-url header'
+      });
+    }
+
     const path = req.path;
+    if (path === '/health') {
+      return; // 跳过健康检查端点的代理
+    }
     
     // 构建完整的目标URL
     const fullUrl = `${targetUrl}${path}`;
     
-    // 转发请求
+    // 设置超时时间为5秒
     const response = await axios({
       method: req.method,
       url: fullUrl,
@@ -27,20 +39,38 @@ app.all('/*', async (req, res) => {
         ...req.headers,
         host: new URL(targetUrl).host,
       },
+      timeout: 5000 // 5秒超时
     });
     
     // 返回响应
     res.status(response.status).json(response.data);
   } catch (error) {
     console.error('Proxy error:', error.message);
-    res.status(500).json({
-      error: 'Proxy error',
-      message: error.message
-    });
+    
+    // 更详细的错误处理
+    if (error.code === 'ECONNREFUSED') {
+      res.status(502).json({
+        error: 'Connection refused',
+        message: '无法连接到目标服务器，请确保目标服务器正在运行且可以访问',
+        details: error.message
+      });
+    } else if (error.code === 'ETIMEDOUT') {
+      res.status(504).json({
+        error: 'Gateway timeout',
+        message: '连接目标服务器超时',
+        details: error.message
+      });
+    } else {
+      res.status(500).json({
+        error: 'Proxy error',
+        message: '代理请求失败',
+        details: error.message
+      });
+    }
   }
 });
 
-// 如果在本地运行，监听3000端口
+// 如果在本地运行，监听3001端口
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
