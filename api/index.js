@@ -61,7 +61,7 @@ app.use((req, res, next) => {
   console.log(`\n[${new Date().toISOString()}] 收到请求:`);
   console.log(`路径: ${req.path}`);
   console.log(`方法: ${req.method}`);
-  console.log('请求头:', req.headers);
+  console.log('请求头:', JSON.stringify(req.headers, null, 2));
   if (req.method !== 'GET') {
     console.log('请求体:', typeof req.body === 'object' ? JSON.stringify(req.body, null, 2) : req.body);
   }
@@ -77,6 +77,7 @@ app.get('/', (req, res) => {
       webhook: '/webhook (POST)',
       health: '/health (GET)'
     },
+    webhook_url: WEBHOOK_URL,
     timestamp: new Date().toISOString()
   });
 });
@@ -94,17 +95,23 @@ async function handleWebhook(req, res) {
   try {
     console.log('转发请求到:', WEBHOOK_URL);
     console.log('请求体类型:', typeof req.body);
-    console.log('请求体:', req.body);
+    console.log('请求体:', typeof req.body === 'object' ? JSON.stringify(req.body, null, 2) : req.body);
+    console.log('请求头:', JSON.stringify(req.headers, null, 2));
+
+    // 准备转发的数据
+    const postData = typeof req.body === 'object' ? req.body : { raw: req.body };
 
     // 转发请求
     const response = await axios({
       method: 'POST',
       url: WEBHOOK_URL,
-      data: req.body,
+      data: postData,
       headers: {
         'Content-Type': 'application/json',
         'User-Agent': 'Vercel-Webhook-Forwarder',
-        ...req.headers
+        'X-Original-Host': req.headers.host,
+        'X-Original-Path': req.path,
+        'X-Original-Method': req.method
       },
       timeout: 10000 // 10秒超时
     });
@@ -114,7 +121,12 @@ async function handleWebhook(req, res) {
     console.log('响应状态:', response.status);
     console.log('响应数据:', JSON.stringify(response.data, null, 2));
     
-    res.json(response.data);
+    res.json({
+      success: true,
+      message: '请求已转发',
+      original_response: response.data,
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
     console.error('转发失败:', error.message);
     console.error('错误堆栈:', error.stack);
@@ -124,6 +136,7 @@ async function handleWebhook(req, res) {
     }
     if (!res.headersSent) {
       res.status(500).json({ 
+        success: false,
         error: error.message,
         stack: error.stack,
         timestamp: new Date().toISOString()
