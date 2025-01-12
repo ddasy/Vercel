@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # OKX 消息转发系统
 
 这是一个基于 Vercel 的消息转发系统，用于接收消息并转发到本地 ngrok 服务。
@@ -56,3 +57,23 @@ ngrok http --url=glad-friendly-ostrich.ngrok-free.app 80
 
 - POST `/webhook`: 接收消息的主要端点
 - GET `/`: 健康检查端点 
+=======
+# Vercel API 代理服务器
+
+这是一个部署在 Vercel 上的 API 代理服务器，用于接收 API 请求并转发到本地服务器。
+
+ `http://localhost:3000`。
+
+## 本地开发
+
+1. 安装依赖：
+   ```bash
+   npm install
+   ```
+
+2. 启动服务器：
+   ```bash
+   npm start
+   ```
+
+>>>>>>> 3dd692cebe05b030ec53a100ea5763b96d5fabeb

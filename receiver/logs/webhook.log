@@ -1,0 +1,391 @@
+[2025-01-12T04:06:19.850Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "curl/8.1.2",
+    "content-length": "28",
+    "accept": "*/*",
+    "content-type": "application/json",
+    "x-forwarded-for": "122.231.237.246",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "accept-encoding": "gzip"
+  },
+  "body": {
+    "test": "测试ngrok转发"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+
+[2025-01-12T04:08:00.735Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "axios/1.7.9",
+    "content-length": "356",
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "content-type": "application/json",
+    "x-forwarded-for": "44.210.15.196",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "x-vercel-id": "pdx1::ck4dd-1736654880415-158608a3b3b4"
+  },
+  "body": {
+    "id": "Short",
+    "action": "sell",
+    "marketPosition": "short",
+    "prevMarketPosition": "flat",
+    "marketPositionSize": "78.8",
+    "prevMarketPositionSize": "0",
+    "instrument": "XRPUSDT.P",
+    "signalToken": "+fs5n6ET3AgDFohcJHC/Vpw/mxfulDZtSlG7cCl0bxJB0ForQfj1ryE8hsKxQrcMGxlOKb0tr25B6caR5w==",
+    "timestamp": "2025-01-12T04:08:00Z",
+    "maxLag": "300",
+    "investmentType": "base",
+    "amount": "78.8"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+
+[2025-01-12T04:08:01.332Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "axios/1.7.9",
+    "content-length": "375",
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "content-type": "application/json",
+    "x-forwarded-for": "54.87.34.226",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "x-vercel-id": "pdx1::bh6pr-1736654880471-3dc7dce03ceb"
+  },
+  "body": {
+    "id": "Close entry(s) order Long",
+    "action": "sell",
+    "marketPosition": "flat",
+    "prevMarketPosition": "long",
+    "marketPositionSize": "0",
+    "prevMarketPositionSize": "78.7",
+    "instrument": "XRPUSDT.P",
+    "signalToken": "+fs5n6ET3AgDFohcJHC/Vpw/mxfulDZtSlG7cCl0bxJB0ForQfj1ryE8hsKxQrcMGxlOKb0tr25B6caR5w==",
+    "timestamp": "2025-01-12T04:08:00Z",
+    "maxLag": "300",
+    "investmentType": "base",
+    "amount": "78.7"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+
+[2025-01-12T04:08:03.137Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "axios/1.7.9",
+    "content-length": "373",
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "content-type": "application/json",
+    "x-forwarded-for": "54.87.34.226",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "x-vercel-id": "pdx1::nhjbr-1736654883062-6497c34cae9e"
+  },
+  "body": {
+    "id": "Close entry(s) order Long",
+    "action": "sell",
+    "marketPosition": "flat",
+    "prevMarketPosition": "long",
+    "marketPositionSize": "0",
+    "prevMarketPositionSize": "195",
+    "instrument": "ADAUSDT.P",
+    "signalToken": "+fs5n6ET3AgDFohcJHC/Vpw/mxfulDZtSlG7cCl0bxJB0ForQfj1ryE8hsKxQrcMGxlOKb0tr25B6caR5w==",
+    "timestamp": "2025-01-12T04:08:02Z",
+    "maxLag": "300",
+    "investmentType": "base",
+    "amount": "195"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+
+[2025-01-12T04:08:03.177Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "axios/1.7.9",
+    "content-length": "354",
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "content-type": "application/json",
+    "x-forwarded-for": "44.210.15.196",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "x-vercel-id": "pdx1::fvj76-1736654883065-4a4ffa81d637"
+  },
+  "body": {
+    "id": "Short",
+    "action": "sell",
+    "marketPosition": "short",
+    "prevMarketPosition": "flat",
+    "marketPositionSize": "195",
+    "prevMarketPositionSize": "0",
+    "instrument": "ADAUSDT.P",
+    "signalToken": "+fs5n6ET3AgDFohcJHC/Vpw/mxfulDZtSlG7cCl0bxJB0ForQfj1ryE8hsKxQrcMGxlOKb0tr25B6caR5w==",
+    "timestamp": "2025-01-12T04:08:02Z",
+    "maxLag": "300",
+    "investmentType": "base",
+    "amount": "195"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+
+[2025-01-12T04:08:04.586Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "axios/1.7.9",
+    "content-length": "378",
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "content-type": "application/json",
+    "x-forwarded-for": "44.210.15.196",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "x-vercel-id": "pdx1::pqwfk-1736654884512-c015467735d1"
+  },
+  "body": {
+    "id": "Close entry(s) order Long",
+    "action": "sell",
+    "marketPosition": "flat",
+    "prevMarketPosition": "long",
+    "marketPositionSize": "0",
+    "prevMarketPositionSize": "7.699",
+    "instrument": "ORDIUSDT.P",
+    "signalToken": "+fs5n6ET3AgDFohcJHC/Vpw/mxfulDZtSlG7cCl0bxJB0ForQfj1ryE8hsKxQrcMGxlOKb0tr25B6caR5w==",
+    "timestamp": "2025-01-12T04:08:04Z",
+    "maxLag": "300",
+    "investmentType": "base",
+    "amount": "7.699"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+
+[2025-01-12T04:08:04.703Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "axios/1.7.9",
+    "content-length": "355",
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "content-type": "application/json",
+    "x-forwarded-for": "54.87.34.226",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "x-vercel-id": "pdx1::ck4dd-1736654884633-c220768f4ddf"
+  },
+  "body": {
+    "id": "Short",
+    "action": "sell",
+    "marketPosition": "short",
+    "prevMarketPosition": "flat",
+    "marketPositionSize": "7.7",
+    "prevMarketPositionSize": "0",
+    "instrument": "ORDIUSDT.P",
+    "signalToken": "+fs5n6ET3AgDFohcJHC/Vpw/mxfulDZtSlG7cCl0bxJB0ForQfj1ryE8hsKxQrcMGxlOKb0tr25B6caR5w==",
+    "timestamp": "2025-01-12T04:08:04Z",
+    "maxLag": "300",
+    "investmentType": "base",
+    "amount": "7.7"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+
+[2025-01-12T04:08:07.898Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "axios/1.7.9",
+    "content-length": "379",
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "content-type": "application/json",
+    "x-forwarded-for": "44.210.15.196",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "x-vercel-id": "pdx1::7nrvx-1736654887814-f09dcfb8de98"
+  },
+  "body": {
+    "id": "Close entry(s) order Long",
+    "action": "sell",
+    "marketPosition": "flat",
+    "prevMarketPosition": "long",
+    "marketPositionSize": "0",
+    "prevMarketPositionSize": "91.491",
+    "instrument": "WLDUSDT.P",
+    "signalToken": "+fs5n6ET3AgDFohcJHC/Vpw/mxfulDZtSlG7cCl0bxJB0ForQfj1ryE8hsKxQrcMGxlOKb0tr25B6caR5w==",
+    "timestamp": "2025-01-12T04:08:07Z",
+    "maxLag": "300",
+    "investmentType": "base",
+    "amount": "91.491"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+
+[2025-01-12T04:08:07.902Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "axios/1.7.9",
+    "content-length": "360",
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "content-type": "application/json",
+    "x-forwarded-for": "54.87.34.226",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "x-vercel-id": "pdx1::g5vjw-1736654887810-8fcd4f8af8f4"
+  },
+  "body": {
+    "id": "Short",
+    "action": "sell",
+    "marketPosition": "short",
+    "prevMarketPosition": "flat",
+    "marketPositionSize": "91.449",
+    "prevMarketPositionSize": "0",
+    "instrument": "WLDUSDT.P",
+    "signalToken": "+fs5n6ET3AgDFohcJHC/Vpw/mxfulDZtSlG7cCl0bxJB0ForQfj1ryE8hsKxQrcMGxlOKb0tr25B6caR5w==",
+    "timestamp": "2025-01-12T04:08:07Z",
+    "maxLag": "300",
+    "investmentType": "base",
+    "amount": "91.449"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+
+[2025-01-12T04:08:20.279Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "axios/1.7.9",
+    "content-length": "379",
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "content-type": "application/json",
+    "x-forwarded-for": "44.210.15.196",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "x-vercel-id": "pdx1::d6m6w-1736654900048-d1d7282de8d2"
+  },
+  "body": {
+    "id": "Close entry(s) order Long",
+    "action": "sell",
+    "marketPosition": "flat",
+    "prevMarketPosition": "long",
+    "marketPositionSize": "0",
+    "prevMarketPositionSize": "29.542",
+    "instrument": "DOTUSDT.P",
+    "signalToken": "+fs5n6ET3AgDFohcJHC/Vpw/mxfulDZtSlG7cCl0bxJB0ForQfj1ryE8hsKxQrcMGxlOKb0tr25B6caR5w==",
+    "timestamp": "2025-01-12T04:08:19Z",
+    "maxLag": "300",
+    "investmentType": "base",
+    "amount": "29.542"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+
+[2025-01-12T04:08:20.319Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "axios/1.7.9",
+    "content-length": "360",
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "content-type": "application/json",
+    "x-forwarded-for": "54.87.34.226",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "x-vercel-id": "pdx1::prl72-1736654900016-7437087ed252"
+  },
+  "body": {
+    "id": "Short",
+    "action": "sell",
+    "marketPosition": "short",
+    "prevMarketPosition": "flat",
+    "marketPositionSize": "29.555",
+    "prevMarketPositionSize": "0",
+    "instrument": "DOTUSDT.P",
+    "signalToken": "+fs5n6ET3AgDFohcJHC/Vpw/mxfulDZtSlG7cCl0bxJB0ForQfj1ryE8hsKxQrcMGxlOKb0tr25B6caR5w==",
+    "timestamp": "2025-01-12T04:08:19Z",
+    "maxLag": "300",
+    "investmentType": "base",
+    "amount": "29.555"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+
+[2025-01-12T04:10:06.896Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "axios/1.7.9",
+    "content-length": "380",
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "content-type": "application/json",
+    "x-forwarded-for": "54.87.34.226",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "x-vercel-id": "pdx1::vgmw8-1736655006474-67bf4ca45bec"
+  },
+  "body": {
+    "id": "Close entry(s) order Short",
+    "action": "buy",
+    "marketPosition": "flat",
+    "prevMarketPosition": "short",
+    "marketPositionSize": "0",
+    "prevMarketPositionSize": "91.449",
+    "instrument": "WLDUSDT.P",
+    "signalToken": "+fs5n6ET3AgDFohcJHC/Vpw/mxfulDZtSlG7cCl0bxJB0ForQfj1ryE8hsKxQrcMGxlOKb0tr25B6caR5w==",
+    "timestamp": "2025-01-12T04:10:06Z",
+    "maxLag": "300",
+    "investmentType": "base",
+    "amount": "91.449"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+
+[2025-01-12T04:10:07.030Z] {
+  "headers": {
+    "host": "c339-122-231-237-246.ngrok-free.app",
+    "user-agent": "axios/1.7.9",
+    "content-length": "357",
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "content-type": "application/json",
+    "x-forwarded-for": "44.210.15.196",
+    "x-forwarded-host": "c339-122-231-237-246.ngrok-free.app",
+    "x-forwarded-proto": "https",
+    "x-vercel-id": "pdx1::ddvln-1736655006556-a8f068d66d60"
+  },
+  "body": {
+    "id": "Long",
+    "action": "buy",
+    "marketPosition": "long",
+    "prevMarketPosition": "flat",
+    "marketPositionSize": "91.533",
+    "prevMarketPositionSize": "0",
+    "instrument": "WLDUSDT.P",
+    "signalToken": "+fs5n6ET3AgDFohcJHC/Vpw/mxfulDZtSlG7cCl0bxJB0ForQfj1ryE8hsKxQrcMGxlOKb0tr25B6caR5w==",
+    "timestamp": "2025-01-12T04:10:06Z",
+    "maxLag": "300",
+    "investmentType": "base",
+    "amount": "91.533"
+  },
+  "method": "POST",
+  "path": "/webhook"
+}
+

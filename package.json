@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "okx-message-forwarder",
   "version": "1.0.0",
   "description": "Message forwarding system with timezone handling and log management",
@@ -18,3 +19,18 @@
     "nodemon": "^3.0.2"
   }
 }
+=======
+  "name": "vercel-proxy-server",
+  "version": "1.0.0",
+  "description": "A proxy server to forward API requests to local server",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node api/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.2",
+    "cors": "^2.8.5"
+  }
+} 
+>>>>>>> 3dd692cebe05b030ec53a100ea5763b96d5fabeb
