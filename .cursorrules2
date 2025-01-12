@@ -1,0 +1,18 @@
+# 项目任务
+
+#接入欧易api 
+API key
+dc265489-1415-4506-89b2-753c4a27ee58
+
+密钥
+113CA465617BFD8D40185F7E84D7448D
+
+密码
+321321Qwe!
+
+# 查询下单合约交易需要的参数 按要求创建文件
+https://www.okx.com/docs-v5/trick_zh/#order-management-placing-an-order
+
+# 如果有测试地址，则创建测试地址，并且测试
+只需要下单、平仓。全币种、全仓、20x固定杠杠
+部分需要base64编码
