@@ -12,17 +12,30 @@ app.use(cors({
   allowedHeaders: ['Content-Type']
 }));
 
-// 解析 JSON 请求体
-app.use(express.json({
-  verify: (req, res, buf) => {
+// 解析原始请求体
+app.use(express.raw({ type: '*/*' }));
+
+// 请求体解析中间件
+app.use((req, res, next) => {
+  if (req.method === 'POST') {
     try {
-      JSON.parse(buf);
-    } catch (e) {
-      res.status(400).json({ error: '无效的 JSON 格式' });
-      throw new Error('无效的 JSON 格式');
+      const rawBody = req.body.toString('utf8');
+      console.log('原始请求体:', rawBody);
+      
+      try {
+        req.body = JSON.parse(rawBody);
+        console.log('解析后的请求体:', req.body);
+      } catch (e) {
+        console.log('请求体不是 JSON 格式，保持原样');
+        req.body = rawBody;
+      }
+    } catch (error) {
+      console.error('处理请求体时出错:', error);
+      req.body = {};
     }
   }
-}));
+  next();
+});
 
 // 本地接收地址
 const WEBHOOK_URL = 'https://c339-122-231-237-246.ngrok-free.app/webhook';
@@ -33,6 +46,7 @@ app.use((err, req, res, next) => {
   if (!res.headersSent) {
     res.status(500).json({ 
       error: err.message,
+      stack: err.stack,
       timestamp: new Date().toISOString()
     });
   }
@@ -49,7 +63,7 @@ app.use((req, res, next) => {
   console.log(`方法: ${req.method}`);
   console.log('请求头:', req.headers);
   if (req.method !== 'GET') {
-    console.log('请求体:', JSON.stringify(req.body, null, 2));
+    console.log('请求体:', typeof req.body === 'object' ? JSON.stringify(req.body, null, 2) : req.body);
   }
   next();
 });
@@ -78,12 +92,9 @@ async function handleWebhook(req, res) {
   console.log(`\n[${startTime.toISOString()}] 开始处理 webhook 请求`);
   
   try {
-    if (!req.body || Object.keys(req.body).length === 0) {
-      throw new Error('请求体为空或无效');
-    }
-
     console.log('转发请求到:', WEBHOOK_URL);
-    console.log('请求体:', JSON.stringify(req.body, null, 2));
+    console.log('请求体类型:', typeof req.body);
+    console.log('请求体:', req.body);
 
     // 转发请求
     const response = await axios({
@@ -92,7 +103,8 @@ async function handleWebhook(req, res) {
       data: req.body,
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': 'Vercel-Webhook-Forwarder'
+        'User-Agent': 'Vercel-Webhook-Forwarder',
+        ...req.headers
       },
       timeout: 10000 // 10秒超时
     });
@@ -105,6 +117,7 @@ async function handleWebhook(req, res) {
     res.json(response.data);
   } catch (error) {
     console.error('转发失败:', error.message);
+    console.error('错误堆栈:', error.stack);
     if (error.response) {
       console.error('响应状态:', error.response.status);
       console.error('响应数据:', error.response.data);
@@ -112,6 +125,7 @@ async function handleWebhook(req, res) {
     if (!res.headersSent) {
       res.status(500).json({ 
         error: error.message,
+        stack: error.stack,
         timestamp: new Date().toISOString()
       });
     }
@@ -144,6 +158,15 @@ app.use((req, res) => {
     method: req.method,
     timestamp: new Date().toISOString()
   });
+});
+
+// 未捕获的错误处理
+process.on('uncaughtException', (error) => {
+  console.error('未捕获的错误:', error);
+});
+
+process.on('unhandledRejection', (error) => {
+  console.error('未处理的 Promise 拒绝:', error);
 });
 
 module.exports = app; 
